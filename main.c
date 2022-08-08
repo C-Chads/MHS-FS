@@ -42,14 +42,18 @@ int main(int argc, char** argv){
 	check_modify_bit();
 
 	if(argc < 2){
+		error:
 		printf("USAGE: %s command\r\n", argv[0]);
 		printf("command can be any of the following:\r\n");
+		printf("\r\n");
+		printf("Where pathi is an internal path, and patho is an external path on the host. \r\n");
+		
 		printf("  ls pathi              : list the files in the directory at path.\r\n");
-		printf("  st pathi name patho   : Store an external file into the VHD, into a file named name.\r\n");
+		printf("  st pathi name patho   : Store an external file into the VHD, into directory pathi, into the file named name.\r\n");
 		printf("  gt patho pathi        : Dump a file from the VHD to a file\r\n");
 		printf("  cat pathi             : Dump a file from the VHD to stdout\r\n");
 		printf("  mkdir pathi name      : Create a directory at pathi with name name.\r\n");
-		printf("  rm dir name           : Delete file or directory name in dir.\r\n");
+		printf("  rm pathi name           : Delete file or directory called name in directory pathi.\r\n");
 		printf("  view                  : View the allocation bitmap.\r\n");
 		return 0;
 	}
@@ -57,6 +61,7 @@ int main(int argc, char** argv){
 	if(strcmp(argv[1], "ls") == 0){
 		char a;
 		MHS_UINT i = 0;
+		if(argc < 3) goto error;
 		printf("<DIRECTORY LISTING>\r\n");
 		for(;;){
 			a = file_get_dir_entry_by_index(
@@ -88,6 +93,7 @@ int main(int argc, char** argv){
 		}
 		return 0;
 	}else if(strcmp(argv[1], "rm") == 0){
+		if(argc < 4) goto error;
 		file_delete(
 			argv[2],
 			argv[3]
@@ -103,6 +109,7 @@ int main(int argc, char** argv){
 		/*
 			Attempt to create it- if it already exists, then it won't do anything.
 		*/
+		if(argc < 5) goto error;
 		file_createempty(
 			argv[2],
 			argv[3],
@@ -133,6 +140,7 @@ int main(int argc, char** argv){
 		}
 		return 0;
 	} else if(strcmp(argv[1], "mkdir") == 0){
+		if(argc < 4) goto error;
 		file_createempty(
 			argv[2],
 			argv[3],
@@ -145,6 +153,7 @@ int main(int argc, char** argv){
 		char a;
 		MHS_UINT len;
 		MHS_UINT j = 0;
+		if(argc < 4) goto error;
 		MHS_strcpy(ubuf, argv[3]);
 		q = fopen(argv[2], "wb");
 		a = file_read_node(ubuf, &usect);
@@ -168,6 +177,7 @@ int main(int argc, char** argv){
 			char a;
 			MHS_UINT len;
 			MHS_UINT j = 0;
+			if(argc < 3) goto error;
 			MHS_strcpy(ubuf, argv[2]);
 			a = file_read_node(ubuf, &usect);
 			if(a == 0) return 1;
@@ -193,49 +203,3 @@ int main(int argc, char** argv){
 	}
 	return 1;
 }
-/*
-BBBBB
-AAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAQAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAFAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAZAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAARAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAANAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAA
-*/
