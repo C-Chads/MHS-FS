@@ -87,7 +87,7 @@ int main(int argc, char** argv){
 				}
 
 			}
-			else return 0;
+			else {printf("<END>");return 0;}
 
 			i++;
 		}

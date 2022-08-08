@@ -41,6 +41,14 @@ Every time the file is resized, this information will need to be updated.
 See the example program main.c for usage.
 
 
+# How to implement a cache for MHS
+
+Make sure that your cached implementation of load_sector and store_sector has writeback.
+
+Whenever a sector is written to it must go back to the disk or the filesystem could break.
+
+This includes the root node!
+
 
 
 # Why this over Fat or Fat32, or other Filesystems
@@ -66,26 +74,8 @@ a system with very little memory such as a Commodore 64, or the Commander X16, o
 
 1) Brand new. So obviously nothing supports it... maybe that will change.
 
-2) A little slow. While a bitmap is used rather than a FAT, the disk allocation routines are highly unoptimized and perform redundant
-	out-of-track reads/writes. For large writes, this is not an issue, but for numerous small (1-2 sector) allocation operations it is
-	very inefficient, performing about twice as many sector loads and stores as needed.
-
-	Under ordinary operation this shouldn't be an issue but if you were unzipping a folder with thousands of tiny files
-	(Like a retro game ROM dump) your disk throughput would be about half or a third the speed of your hard disk.
-
-	A filesystem or database that is fast but doesn't properly record your data is useless (See: MongoDB vs MySQL)
-
-	So I am focusing on correctness and making the code mature enough for serious usage rather than trying to make it fast.
-	Obvious and simple optimizations which I think are "safe" are made, but any that significantly increase code complexity
-	are not taken, because bugs will sneak in, lay eggs, and there will be an entire nest before you can blink.
-
-	I heavily avoid recursive algorithms to prevent stack overflows and try to be memory-efficient. Malloc is not used.
-
-	The only recursive algorithm used is that in the disk recovery function. fsnode_marker recursively marks nodes as used, it is
-
-	called by bitmap_recover.
-
-	However, function recursion is *not* used. a software stack is used which can be controlled.
+2) Inefficient without a cache. Any decent implementation should implement a sector loading cache with writeback (whenever
+a sector write occurs it MUST go through to the disk and it must be atomic!)
 
 # Structure
 
