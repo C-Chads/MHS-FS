@@ -1,4 +1,4 @@
-CC= cc
+CC= tcc
 CFLAGS= -O3 -std=c89
 
 all:

@@ -12,7 +12,7 @@ Any disk which can be abstracted into a linear series of sectors or blocks can b
 
 A simple driver has been implemented which allows transferring files from the host into the virtual hard disk.
 
-The virtual hard disk is 32 megabytes by default and is initialized to zero if it doesn't exist.
+The virtual hard disk is 500 something megabytes by default and is initialized to zero if it doesn't exist.
 
 
 # INTEGRATION
@@ -28,8 +28,9 @@ use the file_ api calls to interact with the filesystem.
 To modify file node attributes such as permission bits and owner UID and whatnot, you should use resolve_path
 passing in a non-const char array. It is recommended to use the library-provided pathbuf for this purpose which is 64k in size.
 
-You would then use load_sector, modify the node, and write it back. As long as you don't change the rptr or dptr, this won't require
-
+You would then use load_sector, modify the node, and write it back. If you are caching sectors in your implementation,
+make sure to keep your cache coherent!!!
+As long as you don't change the rptr or dptr, this won't require
 locking the modify bit of the filesystem.
 
 For faster reads/writes it is recommended not to use file_read_sector and file_write_sector but rather to keep a file descriptor open,
@@ -39,11 +40,14 @@ Every time the file is resized, this information will need to be updated.
 
 See the example program main.c for usage.
 
+
+
+
 # Why this over Fat or Fat32, or other Filesystems
 
 Advantages of MHS-FS over other filesystems:
 
-1) Much easier to implement. Hyper-minimal. Approximately 1.1k sloc of C89.
+1) Much easier to implement. Hyper-minimal. Approximately 1.1k sloc of C89. Fully compatible with a writeback cache scheme.
 
 2) Zero intellectual property issues. This filesystem and all the code in this repository are fully public domain.
 
