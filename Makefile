@@ -36,6 +36,14 @@ test3: clean all
 	./main.out rm /bruhfolder/otherfolder testing_rm
 	./main.out st /bruhfolder/otherfolder testing_rm Makefile
 	./main.out gt should_be_identical_to_main.c.out /bruhfolder/otherfolder/main.c
+	sha256sum main.c
+	sha256sum should_be_identical_to_main.c.out
+	./main.out gt should_be_identical_to_license.out /bruhfolder/otherfolder/LICENSE5
+	sha256sum LICENSE
+	sha256sum should_be_identical_to_license.out
+	./main.out gt should_be_identical_to_main.out /bruhfolder/otherfolder/main2.out
+	sha256sum main.out
+	sha256sum should_be_identical_to_main.out
 	./main.out st /bruhfolder/ main4.out main.out
 	./main.out st /bruhfolder/ main5.out main.out
 	./main.out st /bruhfolder/ main6.out main.out
