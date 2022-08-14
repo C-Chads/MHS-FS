@@ -1,5 +1,7 @@
 # MHS Filesystem
 
+A simpler, easier filesystem than FAT32
+
 The MHS filesystem. Features:
 
 * can be modified to work with any size of disk or sector, even non powers of two!
@@ -40,6 +42,8 @@ Every time the file is resized, this information will need to be updated.
 
 See the example program main.c for usage.
 
+It is recommended that you implement a cache for load_sector and store_sector.
+
 
 # How to implement a cache for MHS
 
@@ -47,7 +51,8 @@ Make sure that your cached implementation of load_sector and store_sector has wr
 
 Whenever a sector is written to it must go back to the disk or the filesystem could break.
 
-This includes the root node!
+This includes the root node, of course. 
+You should probably keep an entirely separate cache for the root node!
 
 
 
@@ -81,7 +86,7 @@ a sector write occurs it MUST go through to the disk and it must be atomic!)
 
 There are only two relevant data structures in the file system:
 
-* Fsnode. Contains the metadata of a file, including a pointer to the first byte on disk. Size: 1 sector
+* Fsnode. Contains the metadata of a file, including a pointer to the first sector on disk. Size: 1 sector
 
 	The fundamental and most important elements of the fsnode, are the right pointer, down pointer, size, and permission bits.
 
@@ -101,6 +106,7 @@ There are only two relevant data structures in the file system:
 
 	The down pointer points either to the first entry in a directory, for directory fsnodes, or the data of a file, for file fsnodes.
 
+	both pointers are sector numbers.
 
 	The structure of the filesystem, then, is a binary tree. File nodes are simple singly-linked-list entries with data,
 
