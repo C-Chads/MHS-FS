@@ -1,6 +1,6 @@
 #!/bin/bash
 IFS=$'\n' FILES=$(find .. -name "MHS.h")
-ME="../simpfs/MHS.h"
+ME="../MHS-FS/MHS.h"
 for filename in $FILES
 do
  if [[ "$filename" != "$ME" ]]; then
