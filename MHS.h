@@ -543,7 +543,8 @@ static void bitmap_alloc_nodes(
 			}
 		}
 		store_sector(bitmap_where + bitmap_offset, &s_allocator);
-		nnodes--; nodeid_in++;
+		nnodes--; /*This value is never used, but, whatever, man!*/
+		nodeid_in++;
 		nodeid = nodeid_in;
 		bitmap_offset = 0; /*Important.*/
 	}
